@@ -1,0 +1,47 @@
+# ==============================================================================
+# STAGE 1: The Builder Container
+# ==============================================================================
+FROM docker.io/menci/archlinuxarm:base AS builder
+
+# 1. Bypass the container sandbox loop by injecting the rule under global options
+RUN sed -i '/^\[options\]/a DisableSandbox' /etc/pacman.conf
+
+# 2. Update pacman and explicitly install Zig along with the full LLVM ecosystem
+RUN pacman -Syu --noconfirm && \
+    pacman -S --noconfirm zig clang lld llvm 
+
+# 3. Create the clean staging directory structure to house our extracted runtime
+RUN mkdir -p /extracted/bin /extracted/lib /extracted/usr/lib /extracted/etc
+
+# 4. Copy the Zig compiler executable and its core library/cross-compilation data assets
+RUN cp -P /usr/bin/zig /extracted/bin/ && \
+    cp -r /usr/lib/zig /extracted/usr/lib/
+
+# 5. Extract specific LLVM, Clang, and LLD core toolchain binaries safely via loop
+RUN for binary in llvm-config clang clang++ lld ld.lld; do \
+        if [ -f "/usr/bin/$binary" ]; then cp -P "/usr/bin/$binary" /extracted/bin/; fi \
+    done
+
+# 6. Trace and copy ALL shared libraries (.so files) required by these engines combined
+RUN ldd /usr/bin/zig /usr/bin/clang /usr/bin/lld | \
+    grep "=> /" | awk '{print $3}' | sort -u | \
+    xargs -I {} cp --parents -P {} /extracted/
+
+# 7. Explicitly bundle the system's dynamic linker/loader required to run on scratch
+RUN ldd /usr/bin/zig | grep -o '/lib/ld-linux.*\.so\.[0-9]' | sort -u | \
+    xargs -I {} cp --parents -P {} /extracted/ 2>/dev/null || true
+
+# 8. Mirror base system configuration environment templates for identity mapping
+RUN cp -P /etc/passwd /etc/group /extracted/etc/ 2>/dev/null || true
+
+
+# ==============================================================================
+# STAGE 2: The Final Compact Production Container
+# ==============================================================================
+FROM scratch
+
+# Bring over the entire self-contained environment map from the builder stage
+COPY --from=builder /extracted/ /
+
+# Set the default binary target and arguments
+CMD ["/bin/sh"]
