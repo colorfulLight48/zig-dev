@@ -35,22 +35,15 @@ RUN chmod +x /extracted/bin/busybox && \
     ln -s busybox /extracted/bin/mkdir
 # 5. Bring over Git, its sub-executables, the musl runtime, and its missing shared libraries
 # 5. Bring over Git, its sub-executables, the musl runtime, and its missing shared libraries
-RUN mkdir -p /extracted/bin /extracted/lib /extracted/usr/lib /extracted/usr/libexec /extracted/etc && \
-    # Copy the main git binary
+# 5. Bring over Git, runtime, libcurl, SSL dependencies, protocols, and templates
+RUN mkdir -p /extracted/bin /extracted/lib /extracted/usr/lib /extracted/usr/libexec /extracted/usr/share/git-core /extracted/etc && \
     cp /usr/bin/git /extracted/bin/ && \
-    # Copy the core C runtime layer (musl)
     cp /lib/ld-musl-*.so.1 /extracted/lib/ && \
-    # FIX: Copy libz from /usr/lib/ instead of /lib/
-    cp /usr/lib/libz.so.1 /extracted/usr/lib/ && \
-    cp /usr/lib/libpcre2-8.so.0 /extracted/usr/lib/ && \
-    # NETWORKING FIXES: Copy SSL/Crypto dependencies for secure HTTPS remote git connections
-    cp /usr/lib/libcrypto.so.3 /extracted/lib/ && \
-    cp /usr/lib/libssl.so.3 /extracted/lib/ && \
-    # SYSTEM FIXES: Copy core protocol files so Git can resolve domain names/ports
-    cp /etc/passwd /extracted/etc/passwd && \
-    cp /etc/protocols /extracted/etc/protocols && \
-    # Copy Git's core internal scripts/executables
-    cp -r /usr/libexec/git-core /extracted/usr/libexec/
+    cp /usr/lib/libz.so.1 /usr/lib/libpcre2-8.so.0 /usr/lib/libcurl.so.4 /usr/lib/libcrypto.so.3 /usr/lib/libssl.so.3 /extracted/usr/lib/ && \
+    cp /etc/passwd /etc/protocols /extracted/etc/ && \
+    cp -r /usr/libexec/git-core /extracted/usr/libexec/ && \
+    cp -r /usr/share/git-core/templates /extracted/usr/share/git-core/
+
 
 
 # ==============================================================================
