@@ -4,7 +4,7 @@
 FROM alpine:3.21 AS builder
 
 # Install curl, tar, xz (for Zig unpacking) and busybox-static
-RUN apk add --no-cache curl tar xz busybox-static
+RUN apk add --no-cache curl tar xz busybox-static ca-certificates git
 
 WORKDIR /staging
 
@@ -22,6 +22,8 @@ RUN cp zig /extracted/bin/zig && \
 
 # 4. FIXED: Copy Alpine's native, 100% static busybox binary directly from the host system layer
 RUN cp /bin/busybox.static /extracted/bin/busybox
+RUN mkdir -p /extracted/etc/ssl/certs
+RUN cp /etc/ssl/certs/ca-certificates.crt /extracted/etc/ssl/certs/ca-certificates.crt
 RUN curl -O https://codeberg.org/neurocyte/flow/releases/download/v0.7.2/flow-v0.7.2-linux-$(uname -m).tar.gz
 RUN tar xzf flow-v0.7.2-linux-$(uname -m).tar.gz
 RUN cp flow /extracted/bin/flow
@@ -32,6 +34,10 @@ RUN chmod +x /extracted/bin/busybox && \
     ln -s busybox /extracted/bin/cat && \
     ln -s busybox /extracted/bin/mkdir
 
+RUN mkdir -p /extracted/bin /extracted/lib /extracted/usr/libexec && \
+    cp /usr/bin/git /extracted/bin/ && \
+    cp /lib/ld-musl-*.so.1 /extracted/lib/ && \
+    cp -r /usr/libexec/git-core /extracted/usr/libexec/
 
 # ==============================================================================
 # STAGE 2: The Final True "FROM scratch" Container
