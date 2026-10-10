@@ -54,7 +54,7 @@ FROM scratch
 COPY --from=builder /extracted/ /
 
 # Provide basic PATH settings so running 'zig' works out of the box
-ENV PATH=/bin
+ENV PATH=/bin:/usr/bin
 ENV ZIG_GLOBAL_CACHE_DIR=/tmp
 # Drop straight into your custom standalone shell prompt!
 CMD ["/bin/sh"]
