@@ -34,16 +34,24 @@ RUN chmod +x /extracted/bin/busybox && \
     ln -s busybox /extracted/bin/cat && \
     ln -s busybox /extracted/bin/mkdir
 # 5. Bring over Git, its sub-executables, the musl runtime, and its missing shared libraries
-RUN mkdir -p /extracted/bin /extracted/lib /extracted/usr/lib /extracted/usr/libexec && \
+# 5. Bring over Git, its sub-executables, the musl runtime, and its missing shared libraries
+RUN mkdir -p /extracted/bin /extracted/lib /extracted/usr/lib /extracted/usr/libexec /extracted/etc && \
     # Copy the main git binary
     cp /usr/bin/git /extracted/bin/ && \
     # Copy the core C runtime layer (musl)
     cp /lib/ld-musl-*.so.1 /extracted/lib/ && \
-    # COPY THE MISSING LIBS: zlib and pcre2 (handling pattern match and compression errors)
-    cp /lib/libz.so.1 /extracted/lib/ && \
+    # FIX: Copy libz from /usr/lib/ instead of /lib/
+    cp /usr/lib/libz.so.1 /extracted/usr/lib/ && \
     cp /usr/lib/libpcre2-8.so.0 /extracted/usr/lib/ && \
-    # Copy Git's core internal scripts/executables (crucial for git clone/fetch to actually work)
+    # NETWORKING FIXES: Copy SSL/Crypto dependencies for secure HTTPS remote git connections
+    cp /lib/libcrypto.so.3 /extracted/lib/ && \
+    cp /lib/libssl.so.3 /extracted/lib/ && \
+    # SYSTEM FIXES: Copy core protocol files so Git can resolve domain names/ports
+    cp /etc/passwd /extracted/etc/passwd && \
+    cp /etc/protocols /extracted/etc/protocols && \
+    # Copy Git's core internal scripts/executables
     cp -r /usr/libexec/git-core /extracted/usr/libexec/
+
 
 # ==============================================================================
 # STAGE 2: The Final True "FROM scratch" Container
