@@ -44,7 +44,7 @@ RUN mkdir -p /extracted/bin /extracted/lib /extracted/usr/lib /extracted/usr/lib
     cp /usr/lib/libz.so.1 /extracted/usr/lib/ && \
     cp /usr/lib/libpcre2-8.so.0 /extracted/usr/lib/ && \
     # NETWORKING FIXES: Copy SSL/Crypto dependencies for secure HTTPS remote git connections
-    cp /lib/libcrypto.so.3 /extracted/lib/ && \
+    cp /usr/lib/libcrypto.so.3 /extracted/lib/ && \
     cp /lib/libssl.so.3 /extracted/lib/ && \
     # SYSTEM FIXES: Copy core protocol files so Git can resolve domain names/ports
     cp /etc/passwd /extracted/etc/passwd && \
