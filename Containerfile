@@ -33,10 +33,16 @@ RUN chmod +x /extracted/bin/busybox && \
     ln -s busybox /extracted/bin/ls && \
     ln -s busybox /extracted/bin/cat && \
     ln -s busybox /extracted/bin/mkdir
-
-RUN mkdir -p /extracted/bin /extracted/lib /extracted/usr/libexec && \
+# 5. Bring over Git, its sub-executables, the musl runtime, and its missing shared libraries
+RUN mkdir -p /extracted/bin /extracted/lib /extracted/usr/lib /extracted/usr/libexec && \
+    # Copy the main git binary
     cp /usr/bin/git /extracted/bin/ && \
+    # Copy the core C runtime layer (musl)
     cp /lib/ld-musl-*.so.1 /extracted/lib/ && \
+    # COPY THE MISSING LIBS: zlib and pcre2 (handling pattern match and compression errors)
+    cp /lib/libz.so.1 /extracted/lib/ && \
+    cp /usr/lib/libpcre2-8.so.0 /extracted/usr/lib/ && \
+    # Copy Git's core internal scripts/executables (crucial for git clone/fetch to actually work)
     cp -r /usr/libexec/git-core /extracted/usr/libexec/
 
 # ==============================================================================
