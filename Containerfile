@@ -27,7 +27,8 @@ RUN cp /bin/busybox.static /extracted/bin/busybox
 RUN chmod +x /extracted/bin/busybox && \
     ln -s busybox /extracted/bin/sh && \
     ln -s busybox /extracted/bin/ls && \
-    ln -s busybox /extracted/bin/cat
+    ln -s busybox /extracted/bin/cat && \
+    ln -s busybox /extracted/bin/mkdir
 
 
 # ==============================================================================
