@@ -61,7 +61,7 @@ RUN mkdir -p /extracted/bin /extracted/lib /extracted/usr/lib /extracted/usr/lib
     cp -r /usr/libexec/git-core /extracted/usr/libexec/ && \
     cp -r /usr/share/git-core/templates /extracted/usr/share/git-core/
 
-
+RUN ln -s /extracted/etc/ssl/certs/ca-certificates.crt /extracted/etc/ssl/cert.pem
 # ==============================================================================
 # STAGE 2: The Final True "FROM scratch" Container
 # ==============================================================================
