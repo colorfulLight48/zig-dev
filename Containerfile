@@ -38,7 +38,7 @@ RUN chmod +x /extracted/bin/busybox && \
 # 5. Bring over Git, runtime, libcurl + its 6 downstream dependencies, SSL, protocols, and templates
 RUN mkdir -p /extracted/bin /extracted/lib /extracted/usr/lib /extracted/usr/libexec /extracted/usr/share/git-core /extracted/etc && \
     cp /usr/bin/git /extracted/bin/ && \
-    cp /usr/bin/zsh /extracted/bin/ && \
+    cp /bin/zsh /extracted/bin/ && \
     cp /lib/ld-musl-*.so.1 /extracted/lib/ && \
     # THE COMPLETE LIBCURL DEPENDENCY MATRIX:
     cp /usr/lib/libz.so.1 \
