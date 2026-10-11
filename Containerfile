@@ -73,6 +73,6 @@ COPY --from=builder /extracted/ /
 ENV PATH=/bin:/usr/bin
 ENV ZIG_GLOBAL_CACHE_DIR=/tmp
 RUN mkdir -p /home/developer
-USER developer
+
 # Drop straight into your custom standalone shell prompt!
 CMD ["/bin/sh"]
