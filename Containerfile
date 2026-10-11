@@ -36,10 +36,11 @@ RUN chmod +x /extracted/bin/busybox && \
 # 5. Bring over Git, its sub-executables, the musl runtime, and its missing shared libraries
 # 5. Bring over Git, runtime, libcurl, SSL dependencies, protocols, and templates
 # 5. Bring over Git, runtime, libcurl + its 6 downstream dependencies, SSL, protocols, and templates
-RUN mkdir -p /extracted/bin /extracted/lib /extracted/usr/lib /extracted/usr/libexec /extracted/usr/share/git-core /extracted/etc && \
+RUN mkdir -p /extracted/bin /extracted/lib /extracted/usr/lib/zsh/5.9/zsh /extracted/usr/libexec /extracted/usr/share/git-core /extracted/etc && \
     cp /usr/bin/git /extracted/bin/ && \
     cp /bin/zsh /extracted/bin/ && \
     cp /lib/ld-musl-*.so.1 /extracted/lib/ && \
+    cp /usr/lib/zsh/5.9/zsh/zle.so /extracted/usr/lib/zsh/5.9/zsh/ && \
     # THE COMPLETE LIBCURL DEPENDENCY MATRIX:
     cp /usr/lib/libz.so.1 \
        /usr/lib/libpcre2-8.so.0 \
@@ -53,7 +54,7 @@ RUN mkdir -p /extracted/bin /extracted/lib /extracted/usr/lib /extracted/usr/lib
        /usr/lib/libzstd.so.1 \
        /usr/lib/libbrotlidec.so.1 \
        /usr/lib/libcap.so.2 \
-       /usr/lib/libncursesw.so.6 \
+       /usr/lib/libncursesw.so.6
        /extracted/usr/lib/ && \
     # Include fallback compression layer which brotlidec depends on internally
     cp /usr/lib/libbrotlicommon.so.1 /extracted/usr/lib/ && \
