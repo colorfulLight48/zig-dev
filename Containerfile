@@ -4,7 +4,7 @@
 FROM alpine:3.21 AS builder
 
 # Install curl, tar, xz (for Zig unpacking) and busybox-static
-RUN apk add --no-cache curl tar xz busybox-static ca-certificates git
+RUN apk add --no-cache curl tar xz busybox-static ca-certificates git zsh
 
 WORKDIR /staging
 # 1. Download and extract the official STATIC release of Zig 0.17.0
@@ -38,6 +38,7 @@ RUN chmod +x /extracted/bin/busybox && \
 # 5. Bring over Git, runtime, libcurl + its 6 downstream dependencies, SSL, protocols, and templates
 RUN mkdir -p /extracted/bin /extracted/lib /extracted/usr/lib /extracted/usr/libexec /extracted/usr/share/git-core /extracted/etc && \
     cp /usr/bin/git /extracted/bin/ && \
+    cp /usr/bin/zsh /extracted/bin/ && \
     cp /lib/ld-musl-*.so.1 /extracted/lib/ && \
     # THE COMPLETE LIBCURL DEPENDENCY MATRIX:
     cp /usr/lib/libz.so.1 \
