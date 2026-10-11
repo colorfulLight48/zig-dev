@@ -52,6 +52,8 @@ RUN mkdir -p /extracted/bin /extracted/lib /extracted/usr/lib /extracted/usr/lib
        /usr/lib/libpsl.so.5 \
        /usr/lib/libzstd.so.1 \
        /usr/lib/libbrotlidec.so.1 \
+       /usr/lib/libcap.so.2 \
+       /usr/lib/libncursesw.so.6 \
        /extracted/usr/lib/ && \
     # Include fallback compression layer which brotlidec depends on internally
     cp /usr/lib/libbrotlicommon.so.1 /extracted/usr/lib/ && \
