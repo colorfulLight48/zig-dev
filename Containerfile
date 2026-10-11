@@ -7,7 +7,7 @@ FROM alpine:3.21 AS builder
 RUN apk add --no-cache curl tar xz busybox-static ca-certificates git
 
 WORKDIR /staging
-
+RUN useradd developer
 # 1. Download and extract the official STATIC release of Zig 0.17.0
 # (This logic dynamically targets x86_64 or aarch64 based on your host CPU)
 RUN ARCH=$(uname -m) && \
@@ -69,9 +69,10 @@ FROM scratch
 
 # Bring over only the static binaries and the Zig library
 COPY --from=builder /extracted/ /
-
 # Provide basic PATH settings so running 'zig' works out of the box
 ENV PATH=/bin:/usr/bin
 ENV ZIG_GLOBAL_CACHE_DIR=/tmp
+RUN mkdir -p /home/developer
+USER developer
 # Drop straight into your custom standalone shell prompt!
 CMD ["/bin/sh"]
