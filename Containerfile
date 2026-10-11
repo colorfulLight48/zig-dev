@@ -7,7 +7,6 @@ FROM alpine:3.21 AS builder
 RUN apk add --no-cache curl tar xz busybox-static ca-certificates git
 
 WORKDIR /staging
-RUN useradd developer
 # 1. Download and extract the official STATIC release of Zig 0.17.0
 # (This logic dynamically targets x86_64 or aarch64 based on your host CPU)
 RUN ARCH=$(uname -m) && \
