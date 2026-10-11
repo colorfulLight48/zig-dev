@@ -40,7 +40,7 @@ RUN mkdir -p /extracted/bin /extracted/lib /extracted/usr/lib/zsh/5.9/zsh /extra
     cp /usr/bin/git /extracted/bin/ && \
     cp /bin/zsh /extracted/bin/ && \
     cp /lib/ld-musl-*.so.1 /extracted/lib/ && \
-    cp /usr/lib/zsh/5.9/zsh/zle.so /extracted/usr/lib/zsh/5.9/zsh/ && \
+    cp /usr/lib/zsh/5.9/zsh/* /extracted/usr/lib/zsh/5.9/zsh/ && \
     # THE COMPLETE LIBCURL DEPENDENCY MATRIX:
     cp /usr/lib/libz.so.1 \
        /usr/lib/libpcre2-8.so.0 \
