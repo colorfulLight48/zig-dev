@@ -75,7 +75,6 @@ FROM scratch
 COPY --from=builder /extracted/ /
 # Provide basic PATH settings so running 'zig' works out of the box
 ENV PATH=/bin:/usr/bin:/opt//blackdog/bin
-ENV ZIG_GLOBAL_CACHE_DIR=/tmp
 RUN mkdir -p /root
 WORKDIR /tmp
 RUN git clone https://git.galacticsystemsindevelopment.xyz/mjdescy/blackdogcli
