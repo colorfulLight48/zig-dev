@@ -31,7 +31,8 @@ RUN chmod +x /extracted/bin/busybox && \
     ln -s busybox /extracted/bin/sh && \
     ln -s busybox /extracted/bin/ls && \
     ln -s busybox /extracted/bin/cat && \
-    ln -s busybox /extracted/bin/mkdir
+    ln -s busybox /extracted/bin/mkdir && \
+    ln -s busybox /extracted/bin/rm
 # 5. Bring over Git, its sub-executables, the musl runtime, and its missing shared libraries
 # 5. Bring over Git, its sub-executables, the musl runtime, and its missing shared libraries
 # 5. Bring over Git, runtime, libcurl, SSL dependencies, protocols, and templates
