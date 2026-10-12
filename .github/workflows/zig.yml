@@ -10,9 +10,20 @@ on:
 
 jobs:
   build-and-push:
-    runs-on: ubuntu-latest
+    name: Build and Push (${{ matrix.platform }})
+    strategy:
+      fail-fast: false
+      matrix:
+        # Define the matrix matching the host runner to the correct target platform
+        include:
+          - runner: ubuntu-latest
+            platform: linux/amd64
+          - runner: ubuntu-26.04-arm
+            platform: linux/arm64
+
+    # Dynamically select the free native host runner based on the matrix item
+    runs-on: ${{ matrix.runner }}
     
-    # Required permissions to write packages to GHCR
     permissions:
       contents: read
       packages: write
@@ -20,10 +31,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      # Set up QEMU for multi-architecture emulation (required for ARM on AMD64 runners)
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -40,8 +47,11 @@ jobs:
         with:
           context: .
           file: ./Containerfile
-          platforms: linux/amd64,linux/arm64
+          # Build only the native platform for this specific runner (No QEMU needed!)
+          platforms: ${{ matrix.platform }}
           push: ${{ github.event_name != 'pull_request' }}
           tags: |
-            ghcr.io/colorfullight48/zig-dev:latest
-            ghcr.io/colorfullight48/zig-dev:${{ github.sha }}
+            ghcr.io/colorfullight48/zig-dev:latest-${{ matrix.runner == 'ubuntu-latest' && 'amd64' || 'arm64' }}
+            ghcr.io/colorfullight48/zig-dev:${{ github.sha }}-${{ matrix.runner == 'ubuntu-latest' && 'amd64' || 'arm64' }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
