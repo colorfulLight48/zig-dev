@@ -74,7 +74,7 @@ FROM scratch
 # Bring over only the static binaries and the Zig library
 COPY --from=builder /extracted/ /
 # Provide basic PATH settings so running 'zig' works out of the box
-ENV PATH=/bin:/usr/bin
+ENV PATH=/bin:/usr/bin:/opt//blackdog/bin
 ENV ZIG_GLOBAL_CACHE_DIR=/tmp
 RUN mkdir -p /root
 WORKDIR /tmp
