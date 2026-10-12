@@ -76,6 +76,12 @@ COPY --from=builder /extracted/ /
 ENV PATH=/bin:/usr/bin
 ENV ZIG_GLOBAL_CACHE_DIR=/tmp
 RUN mkdir -p /root
+WORKDIR /tmp
+RUN git clone https://git.galacticsystemsindevelopment.xyz/mjdescy/blackdogcli
+WORKDIR /tmp/blackdogcli
+RUN zig build -Di
+WORKDIR /root
+RUN rm -rf /tmp/blackdogcli
 
 # Drop straight into your custom standalone shell prompt!
 CMD ["/bin/sh"]
